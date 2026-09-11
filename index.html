@@ -17,11 +17,10 @@ body{
   color:#dffcff;
   font-family:Consolas,monospace;
   min-height:100vh;
-  overflow:hidden;
+  overflow-x:hidden;
 }
 
-/* 背景 */
-canvas{
+canvas#matrix{
   position:fixed;
   inset:0;
   z-index:-2;
@@ -39,7 +38,10 @@ body::after{
   z-index:-1;
 }
 
-/* 起動画面 */
+/* =========================
+   BOOT SCREEN
+========================= */
+
 #boot{
   position:fixed;
   inset:0;
@@ -93,11 +95,14 @@ body::after{
   }
 }
 
-/* メイン */
+/* =========================
+   MAIN
+========================= */
+
 .wrapper{
   width:min(1500px,94%);
   margin:auto;
-  padding:25px 0;
+  padding:25px 0 50px;
   opacity:0;
   animation:appear 1s ease 3.3s forwards;
 }
@@ -110,6 +115,7 @@ header{
   display:flex;
   justify-content:space-between;
   align-items:center;
+  gap:20px;
   border-bottom:1px solid #17343c;
   padding-bottom:15px;
 }
@@ -135,6 +141,15 @@ header{
   50%{opacity:.2}
 }
 
+.clock{
+  font-size:13px;
+  color:#00f6ff;
+}
+
+/* =========================
+   HERO
+========================= */
+
 .hero{
   margin:35px 0;
 }
@@ -159,7 +174,10 @@ header{
   color:#718b91;
 }
 
-/* グリッド */
+/* =========================
+   CARDS
+========================= */
+
 .grid{
   display:grid;
   grid-template-columns:repeat(4,1fr);
@@ -177,7 +195,7 @@ header{
 }
 
 .card:hover{
-  transform:translateY(-5px);
+  transform:translateY(-4px);
   border-color:#00f6ff;
   box-shadow:0 0 30px rgba(0,246,255,.1);
 }
@@ -222,7 +240,10 @@ header{
   transition:width .7s;
 }
 
-/* 下部 */
+/* =========================
+   BOTTOM
+========================= */
+
 .bottom{
   display:grid;
   grid-template-columns:1.5fr 1fr;
@@ -246,6 +267,10 @@ header{
   color:#00f6ff;
 }
 
+/* =========================
+   NEURAL CORE
+========================= */
+
 .core{
   display:flex;
   justify-content:center;
@@ -267,6 +292,9 @@ header{
     0 0 20px rgba(0,246,255,.3),
     inset 0 0 30px rgba(0,246,255,.1);
   animation:rotate 8s linear infinite;
+  transition:
+    transform .08s,
+    box-shadow .08s;
 }
 
 .coreCircle::before,
@@ -302,14 +330,102 @@ header{
   to{transform:rotate(-360deg)}
 }
 
-/* 時計 */
-.clock{
-  font-size:13px;
-  color:#00f6ff;
+/* =========================
+   MUSIC ANALYZER
+========================= */
+
+.musicAnalyzer{
+  margin-top:14px;
 }
 
-/* レスポンシブ */
+.musicTop{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  margin:15px 0;
+}
+
+#musicName{
+  color:#00f6ff;
+  font-size:14px;
+  word-break:break-all;
+}
+
+#musicTime{
+  color:#5d777e;
+  font-size:11px;
+  margin-top:5px;
+}
+
+.upload{
+  border:1px solid #00f6ff;
+  padding:10px 16px;
+  font-size:11px;
+  color:#00f6ff;
+  cursor:pointer;
+  transition:.3s;
+  white-space:nowrap;
+}
+
+.upload:hover{
+  background:#00f6ff;
+  color:#020307;
+  box-shadow:0 0 20px rgba(0,246,255,.4);
+}
+
+#audio{
+  width:100%;
+  margin-bottom:15px;
+}
+
+#waveform,
+#spectrum{
+  width:100%;
+  height:150px;
+  display:block;
+  background:rgba(0,0,0,.35);
+  border:1px solid #102e36;
+  margin-top:10px;
+}
+
+#waveform{
+  box-shadow:0 0 20px rgba(0,246,255,.04);
+}
+
+.audioStats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-top:12px;
+}
+
+.audioStats div{
+  border:1px solid #12343c;
+  padding:12px;
+  background:rgba(0,0,0,.2);
+}
+
+.audioStats span{
+  display:block;
+  font-size:9px;
+  color:#58757d;
+  letter-spacing:2px;
+}
+
+.audioStats strong{
+  display:block;
+  color:#00f6ff;
+  font-size:20px;
+  margin-top:5px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
 @media(max-width:900px){
+
   .grid{
     grid-template-columns:repeat(2,1fr);
   }
@@ -318,15 +434,37 @@ header{
     grid-template-columns:1fr;
   }
 
-  body{
-    overflow:auto;
+  header{
+    flex-wrap:wrap;
   }
 }
 
-@media(max-width:500px){
+@media(max-width:600px){
+
   .wrapper{
-    padding:15px 0;
+    padding:15px 0 40px;
   }
+
+  .musicTop{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .audioStats{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  #waveform,
+  #spectrum{
+    height:110px;
+  }
+
+  .hero h1{
+    letter-spacing:-2px;
+  }
+}
+
+@media(max-width:450px){
 
   .grid{
     grid-template-columns:1fr 1fr;
@@ -340,8 +478,8 @@ header{
     font-size:25px;
   }
 
-  .hero h1{
-    letter-spacing:-2px;
+  .logo{
+    font-size:15px;
   }
 }
 </style>
@@ -351,76 +489,297 @@ header{
 
 <canvas id="matrix"></canvas>
 
-<!-- 起動画面 -->
+<!-- =========================
+     BOOT
+========================= -->
+
 <div id="boot">
+
   <div class="bootBox">
-    <div class="bootTitle">NEXUS</div>
-    <div class="progress"><span></span></div>
+
+    <div class="bootTitle">
+      NEXUS
+    </div>
+
+    <div class="progress">
+      <span></span>
+    </div>
+
     <div class="bootText" id="bootText">
       INITIALIZING SYSTEM...
     </div>
+
   </div>
+
 </div>
+
 
 <div class="wrapper">
 
+<!-- =========================
+     HEADER
+========================= -->
+
 <header>
-  <div class="logo">NEXUS // CORE</div>
-  <div class="status">SYSTEM ONLINE</div>
-  <div class="clock" id="clock">00:00:00</div>
+
+  <div class="logo">
+    NEXUS // CORE
+  </div>
+
+  <div class="status">
+    SYSTEM ONLINE
+  </div>
+
+  <div class="clock" id="clock">
+    00:00:00
+  </div>
+
 </header>
 
+
+<!-- =========================
+     HERO
+========================= -->
+
 <section class="hero">
-  <small>ADVANCED MONITORING SYSTEM / 09.11.2026</small>
-  <h1>CONTROL<br><span>CENTER</span></h1>
-  <p>REAL-TIME SYSTEM OBSERVATION INTERFACE</p>
+
+  <small>
+    ADVANCED MONITORING SYSTEM / REAL-TIME
+  </small>
+
+  <h1>
+    CONTROL<br>
+    <span>CENTER</span>
+  </h1>
+
+  <p>
+    REAL-TIME SYSTEM & AUDIO OBSERVATION INTERFACE
+  </p>
+
 </section>
+
+
+<!-- =========================
+     SYSTEM METERS
+========================= -->
 
 <section class="grid">
 
   <div class="card">
-    <div class="label">CPU LOAD</div>
-    <div class="value" id="cpu">37<span class="unit">%</span></div>
-    <div class="bar"><span id="cpuBar" style="width:37%"></span></div>
+
+    <div class="label">
+      CPU LOAD
+    </div>
+
+    <div class="value" id="cpu">
+      37<span class="unit">%</span>
+    </div>
+
+    <div class="bar">
+      <span id="cpuBar" style="width:37%"></span>
+    </div>
+
   </div>
 
-  <div class="card">
-    <div class="label">MEMORY</div>
-    <div class="value" id="memory">64<span class="unit">%</span></div>
-    <div class="bar"><span id="memoryBar" style="width:64%"></span></div>
-  </div>
 
   <div class="card">
-    <div class="label">NETWORK</div>
-    <div class="value" id="network">82<span class="unit">%</span></div>
-    <div class="bar"><span id="networkBar" style="width:82%"></span></div>
+
+    <div class="label">
+      MEMORY
+    </div>
+
+    <div class="value" id="memory">
+      64<span class="unit">%</span>
+    </div>
+
+    <div class="bar">
+      <span id="memoryBar" style="width:64%"></span>
+    </div>
+
   </div>
 
+
   <div class="card">
-    <div class="label">CORE TEMP</div>
-    <div class="value" id="temp">42<span class="unit">°C</span></div>
-    <div class="bar"><span id="tempBar" style="width:42%"></span></div>
+
+    <div class="label">
+      NETWORK
+    </div>
+
+    <div class="value" id="network">
+      82<span class="unit">%</span>
+    </div>
+
+    <div class="bar">
+      <span id="networkBar" style="width:82%"></span>
+    </div>
+
+  </div>
+
+
+  <div class="card">
+
+    <div class="label">
+      CORE TEMP
+    </div>
+
+    <div class="value" id="temp">
+      42<span class="unit">°C</span>
+    </div>
+
+    <div class="bar">
+      <span id="tempBar" style="width:42%"></span>
+    </div>
+
   </div>
 
 </section>
 
+
+<!-- =========================
+     LOG + CORE
+========================= -->
+
 <section class="bottom">
 
   <div class="card">
-    <div class="label">LIVE SYSTEM LOG</div>
+
+    <div class="label">
+      LIVE SYSTEM LOG
+    </div>
+
     <div class="log" id="log"></div>
+
   </div>
 
+
   <div class="card">
-    <div class="label">NEURAL CORE</div>
+
+    <div class="label">
+      NEURAL CORE
+    </div>
 
     <div class="core">
-      <div class="coreCircle">
+
+      <div class="coreCircle" id="coreCircle">
+
         <div class="coreText">
           CORE<br>
           <strong>ACTIVE</strong>
         </div>
+
       </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =========================
+     MUSIC ANALYZER
+========================= -->
+
+<section class="musicAnalyzer card">
+
+  <div class="label">
+    REAL-TIME AUDIO ANALYZER
+  </div>
+
+
+  <div class="musicTop">
+
+    <div>
+
+      <div id="musicName">
+        NO AUDIO SIGNAL
+      </div>
+
+      <div id="musicTime">
+        00:00 / 00:00
+      </div>
+
+    </div>
+
+
+    <label class="upload">
+
+      LOAD AUDIO
+
+      <input
+        type="file"
+        id="audioFile"
+        accept="audio/*"
+        hidden
+      >
+
+    </label>
+
+  </div>
+
+
+  <audio
+    id="audio"
+    controls>
+  </audio>
+
+
+  <canvas id="waveform"></canvas>
+
+  <canvas id="spectrum"></canvas>
+
+
+  <div class="audioStats">
+
+    <div>
+
+      <span>
+        VOLUME
+      </span>
+
+      <strong id="volume">
+        0%
+      </strong>
+
+    </div>
+
+
+    <div>
+
+      <span>
+        BASS
+      </span>
+
+      <strong id="bass">
+        0%
+      </strong>
+
+    </div>
+
+
+    <div>
+
+      <span>
+        MID
+      </span>
+
+      <strong id="mid">
+        0%
+      </strong>
+
+    </div>
+
+
+    <div>
+
+      <span>
+        TREBLE
+      </span>
+
+      <strong id="treble">
+        0%
+      </strong>
+
     </div>
 
   </div>
@@ -429,66 +788,102 @@ header{
 
 </div>
 
+
 <script>
 
-/* =========================
-   時計
-========================= */
+/* =====================================================
+   CLOCK
+===================================================== */
 
 function updateClock(){
+
   const now = new Date();
 
-  const h = String(now.getHours()).padStart(2,"0");
-  const m = String(now.getMinutes()).padStart(2,"0");
-  const s = String(now.getSeconds()).padStart(2,"0");
+  const h =
+    String(now.getHours()).padStart(2,"0");
 
-  document.getElementById("clock").textContent =
+  const m =
+    String(now.getMinutes()).padStart(2,"0");
+
+  const s =
+    String(now.getSeconds()).padStart(2,"0");
+
+  document.getElementById("clock")
+    .textContent =
     `${h}:${m}:${s}`;
 }
 
 setInterval(updateClock,1000);
+
 updateClock();
 
 
-/* =========================
-   ランダムメーター
-========================= */
+/* =====================================================
+   SYSTEM METERS
+===================================================== */
 
 function updateMeter(id,bar,min,max){
 
   const value =
-    Math.floor(Math.random()*(max-min+1))+min;
+    Math.floor(
+      Math.random()*(max-min+1)
+    ) + min;
 
-  document.getElementById(id).innerHTML =
+  document.getElementById(id)
+    .innerHTML =
     `${value}<span class="unit">%</span>`;
 
-  document.getElementById(bar).style.width =
-    value+"%";
+  document.getElementById(bar)
+    .style.width =
+    value + "%";
 }
+
 
 setInterval(()=>{
 
-  updateMeter("cpu","cpuBar",15,85);
-  updateMeter("memory","memoryBar",35,90);
-  updateMeter("network","networkBar",20,99);
+  updateMeter(
+    "cpu",
+    "cpuBar",
+    15,
+    85
+  );
+
+  updateMeter(
+    "memory",
+    "memoryBar",
+    35,
+    90
+  );
+
+  updateMeter(
+    "network",
+    "networkBar",
+    20,
+    99
+  );
 
   const temp =
-    Math.floor(Math.random()*20)+35;
+    Math.floor(
+      Math.random()*20
+    ) + 35;
 
-  document.getElementById("temp").innerHTML =
+  document.getElementById("temp")
+    .innerHTML =
     `${temp}<span class="unit">°C</span>`;
 
-  document.getElementById("tempBar").style.width =
-    temp+"%";
+  document.getElementById("tempBar")
+    .style.width =
+    temp + "%";
 
 },1500);
 
 
-/* =========================
-   システムログ
-========================= */
+/* =====================================================
+   SYSTEM LOG
+===================================================== */
 
 const messages = [
+
   "Connection established",
   "Neural core synchronized",
   "Network packet received",
@@ -498,21 +893,30 @@ const messages = [
   "Encrypted channel active",
   "Monitoring process running",
   "Telemetry data updated",
-  "Quantum cache synchronized"
+  "Quantum cache synchronized",
+  "Audio interface initialized",
+  "Signal processor waiting"
+
 ];
+
 
 function addLog(){
 
   const log =
     document.getElementById("log");
 
-  const now = new Date();
+  const now =
+    new Date();
 
   const time =
     now.toLocaleTimeString("ja-JP");
 
   const msg =
-    messages[Math.floor(Math.random()*messages.length)];
+    messages[
+      Math.floor(
+        Math.random()*messages.length
+      )
+    ];
 
   const line =
     document.createElement("div");
@@ -523,66 +927,112 @@ function addLog(){
   log.prepend(line);
 
   while(log.children.length > 9){
-    log.removeChild(log.lastChild);
+
+    log.removeChild(
+      log.lastChild
+    );
+
   }
+
 }
 
 setInterval(addLog,900);
 
-for(let i=0;i<5;i++) addLog();
+for(let i=0;i<5;i++){
+
+  addLog();
+
+}
 
 
-/* =========================
-   MATRIX背景
-========================= */
+/* =====================================================
+   MATRIX BACKGROUND
+===================================================== */
 
-const canvas =
+const matrix =
   document.getElementById("matrix");
 
 const ctx =
-  canvas.getContext("2d");
+  matrix.getContext("2d");
 
-let width,height;
+let width;
+let height;
 let columns;
 let drops;
 
-function resize(){
+
+function resizeMatrix(){
 
   width =
-    canvas.width =
-    window.innerWidth;
+    matrix.width =
+    window.innerWidth *
+    devicePixelRatio;
 
   height =
-    canvas.height =
-    window.innerHeight;
+    matrix.height =
+    window.innerHeight *
+    devicePixelRatio;
+
+  matrix.style.width =
+    window.innerWidth + "px";
+
+  matrix.style.height =
+    window.innerHeight + "px";
+
+  ctx.scale(
+    devicePixelRatio,
+    devicePixelRatio
+  );
 
   columns =
-    Math.floor(width/18);
+    Math.floor(
+      window.innerWidth / 18
+    );
 
   drops =
     Array(columns).fill(1);
+
 }
 
-resize();
 
-window.addEventListener("resize",resize);
+resizeMatrix();
+
+window.addEventListener(
+  "resize",
+  resizeMatrix
+);
+
 
 function drawMatrix(){
 
   ctx.fillStyle =
     "rgba(3,5,10,.12)";
 
-  ctx.fillRect(0,0,width,height);
+  ctx.fillRect(
+    0,
+    0,
+    window.innerWidth,
+    window.innerHeight
+  );
 
-  ctx.font="14px monospace";
+  ctx.font =
+    "14px monospace";
 
-  for(let i=0;i<drops.length;i++){
+  const chars =
+    "01アイウエオカキクケコ<>/{}[]";
 
-    const chars =
-      "01アイウエオカキクケコ<>/{}[]";
+  for(
+    let i=0;
+    i<drops.length;
+    i++
+  ){
 
     const char =
-      chars[Math.floor(Math.random()*chars.length)];
+      chars[
+        Math.floor(
+          Math.random()*chars.length
+        )
+      ];
 
     ctx.fillStyle =
       "rgba(0,246,255,.25)";
@@ -594,44 +1044,694 @@ function drawMatrix(){
     );
 
     if(
-      drops[i]*18 > height &&
+      drops[i]*18 >
+      window.innerHeight &&
       Math.random()>.975
     ){
+
       drops[i]=0;
+
     }
 
     drops[i]++;
+
   }
+
 }
 
-setInterval(drawMatrix,50);
+setInterval(
+  drawMatrix,
+  50
+);
 
 
-/* =========================
-   起動メッセージ
-========================= */
+/* =====================================================
+   BOOT MESSAGE
+===================================================== */
 
 const bootMessages = [
+
   "LOADING NEURAL CORE...",
   "ESTABLISHING SECURE CHANNEL...",
   "CALIBRATING MONITORING SYSTEM...",
   "SYSTEM INTEGRITY CHECK...",
+  "AUDIO PROCESSOR READY.",
   "ACCESS GRANTED."
+
 ];
 
-let index=0;
+let bootIndex = 0;
+
 
 setInterval(()=>{
 
-  if(index<bootMessages.length){
+  if(
+    bootIndex <
+    bootMessages.length
+  ){
 
-    document.getElementById("bootText")
-      .textContent=bootMessages[index];
+    document.getElementById(
+      "bootText"
+    ).textContent =
+      bootMessages[bootIndex];
 
-    index++;
+    bootIndex++;
+
   }
 
-},500);
+},450);
+
+
+/* =====================================================
+   AUDIO ANALYZER
+===================================================== */
+
+const audioFile =
+  document.getElementById(
+    "audioFile"
+  );
+
+const audio =
+  document.getElementById(
+    "audio"
+  );
+
+const musicName =
+  document.getElementById(
+    "musicName"
+  );
+
+const musicTime =
+  document.getElementById(
+    "musicTime"
+  );
+
+const waveform =
+  document.getElementById(
+    "waveform"
+  );
+
+const spectrum =
+  document.getElementById(
+    "spectrum"
+  );
+
+const waveCtx =
+  waveform.getContext("2d");
+
+const spectrumCtx =
+  spectrum.getContext("2d");
+
+const coreCircle =
+  document.getElementById(
+    "coreCircle"
+  );
+
+
+let audioContext;
+let analyser;
+let source;
+
+let dataArray;
+let frequencyData;
+
+let audioInitialized = false;
+let animationRunning = false;
+
+
+/* =====================================================
+   LOAD AUDIO
+===================================================== */
+
+audioFile.addEventListener(
+  "change",
+  function(){
+
+    const file =
+      this.files[0];
+
+    if(!file) return;
+
+    musicName.textContent =
+      file.name;
+
+    audio.src =
+      URL.createObjectURL(file);
+
+    audio.load();
+
+    initializeAudio();
+
+    addAudioLog(
+      "Audio signal loaded: " +
+      file.name
+    );
+
+  }
+);
+
+
+/* =====================================================
+   INITIALIZE AUDIO
+===================================================== */
+
+function initializeAudio(){
+
+  if(audioInitialized)
+    return;
+
+  audioContext =
+    new (
+      window.AudioContext ||
+      window.webkitAudioContext
+    )();
+
+  analyser =
+    audioContext.createAnalyser();
+
+  analyser.fftSize =
+    2048;
+
+  analyser.smoothingTimeConstant =
+    0.75;
+
+  const bufferLength =
+    analyser.frequencyBinCount;
+
+  dataArray =
+    new Uint8Array(
+      bufferLength
+    );
+
+  frequencyData =
+    new Uint8Array(
+      bufferLength
+    );
+
+  source =
+    audioContext
+      .createMediaElementSource(
+        audio
+      );
+
+  source.connect(
+    analyser
+  );
+
+  analyser.connect(
+    audioContext.destination
+  );
+
+  audioInitialized = true;
+
+}
+
+
+/* =====================================================
+   PLAY
+===================================================== */
+
+audio.addEventListener(
+  "play",
+  ()=>{
+
+    if(
+      audioContext &&
+      audioContext.state ===
+      "suspended"
+    ){
+
+      audioContext.resume();
+
+    }
+
+    drawAudio();
+
+    addAudioLog(
+      "Audio playback started"
+    );
+
+  }
+);
+
+
+/* =====================================================
+   WAVEFORM
+===================================================== */
+
+function drawWaveform(){
+
+  const width =
+    waveform.clientWidth;
+
+  const height =
+    waveform.clientHeight;
+
+  const ratio =
+    window.devicePixelRatio || 1;
+
+  waveform.width =
+    width * ratio;
+
+  waveform.height =
+    height * ratio;
+
+  waveCtx.setTransform(
+    ratio,
+    0,
+    0,
+    ratio,
+    0,
+    0
+  );
+
+  waveCtx.clearRect(
+    0,
+    0,
+    width,
+    height
+  );
+
+  analyser.getByteTimeDomainData(
+    dataArray
+  );
+
+  waveCtx.beginPath();
+
+  waveCtx.lineWidth = 2;
+
+  waveCtx.strokeStyle =
+    "#00f6ff";
+
+  const sliceWidth =
+    width /
+    dataArray.length;
+
+  let x = 0;
+
+  for(
+    let i=0;
+    i<dataArray.length;
+    i++
+  ){
+
+    const v =
+      dataArray[i] / 128;
+
+    const y =
+      v * height / 2;
+
+    if(i === 0){
+
+      waveCtx.moveTo(
+        x,
+        y
+      );
+
+    }else{
+
+      waveCtx.lineTo(
+        x,
+        y
+      );
+
+    }
+
+    x += sliceWidth;
+
+  }
+
+  waveCtx.stroke();
+
+}
+
+
+/* =====================================================
+   SPECTRUM
+===================================================== */
+
+function drawSpectrum(){
+
+  const width =
+    spectrum.clientWidth;
+
+  const height =
+    spectrum.clientHeight;
+
+  const ratio =
+    window.devicePixelRatio || 1;
+
+  spectrum.width =
+    width * ratio;
+
+  spectrum.height =
+    height * ratio;
+
+  spectrumCtx.setTransform(
+    ratio,
+    0,
+    0,
+    ratio,
+    0,
+    0
+  );
+
+  spectrumCtx.clearRect(
+    0,
+    0,
+    width,
+    height
+  );
+
+  analyser.getByteFrequencyData(
+    frequencyData
+  );
+
+  const bars = 100;
+
+  const step =
+    Math.floor(
+      frequencyData.length /
+      bars
+    );
+
+  const barWidth =
+    width / bars;
+
+  for(
+    let i=0;
+    i<bars;
+    i++
+  ){
+
+    const value =
+      frequencyData[
+        i * step
+      ];
+
+    const barHeight =
+      (value / 255) *
+      height;
+
+    spectrumCtx.fillStyle =
+      "#00f6ff";
+
+    spectrumCtx.fillRect(
+      i * barWidth,
+      height - barHeight,
+      barWidth - 2,
+      barHeight
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   VOLUME
+===================================================== */
+
+function calculateVolume(){
+
+  let sum = 0;
+
+  for(
+    let i=0;
+    i<dataArray.length;
+    i++
+  ){
+
+    const value =
+      (dataArray[i]-128)/128;
+
+    sum +=
+      value * value;
+
+  }
+
+  const rms =
+    Math.sqrt(
+      sum /
+      dataArray.length
+    );
+
+  const volume =
+    Math.min(
+      100,
+      Math.round(
+        rms * 140
+      )
+    );
+
+  document.getElementById(
+    "volume"
+  ).textContent =
+    volume + "%";
+
+  /* COREを音楽に反応させる */
+
+  const scale =
+    1 + volume / 450;
+
+  coreCircle.style.transform =
+    `scale(${scale}) rotate(${performance.now()/45}deg)`;
+
+  coreCircle.style.boxShadow =
+    `
+    0 0 ${20 + volume/2}px rgba(0,246,255,.5),
+    inset 0 0 ${30 + volume}px rgba(0,246,255,.2)
+    `;
+
+}
+
+
+/* =====================================================
+   BASS / MID / TREBLE
+===================================================== */
+
+function calculateFrequency(){
+
+  let bass = 0;
+  let mid = 0;
+  let treble = 0;
+
+  const length =
+    frequencyData.length;
+
+  for(
+    let i=0;
+    i<length;
+    i++
+  ){
+
+    const value =
+      frequencyData[i];
+
+    const frequency =
+      i *
+      audioContext.sampleRate /
+      analyser.fftSize;
+
+    if(
+      frequency < 250
+    ){
+
+      bass += value;
+
+    }else if(
+      frequency < 4000
+    ){
+
+      mid += value;
+
+    }else{
+
+      treble += value;
+
+    }
+
+  }
+
+  bass =
+    Math.min(
+      100,
+      Math.round(
+        bass /
+        (length * .15)
+      )
+    );
+
+  mid =
+    Math.min(
+      100,
+      Math.round(
+        mid /
+        (length * .25)
+      )
+    );
+
+  treble =
+    Math.min(
+      100,
+      Math.round(
+        treble /
+        (length * .12)
+      )
+    );
+
+  document.getElementById(
+    "bass"
+  ).textContent =
+    bass + "%";
+
+  document.getElementById(
+    "mid"
+  ).textContent =
+    mid + "%";
+
+  document.getElementById(
+    "treble"
+  ).textContent =
+    treble + "%";
+
+}
+
+
+/* =====================================================
+   TIME
+===================================================== */
+
+audio.addEventListener(
+  "timeupdate",
+  ()=>{
+
+    const current =
+      audio.currentTime;
+
+    const duration =
+      audio.duration || 0;
+
+    function formatTime(sec){
+
+      const m =
+        Math.floor(
+          sec / 60
+        );
+
+      const s =
+        Math.floor(
+          sec % 60
+        );
+
+      return (
+        String(m)
+          .padStart(2,"0")
+        + ":" +
+        String(s)
+          .padStart(2,"0")
+      );
+
+    }
+
+    musicTime.textContent =
+      `${formatTime(current)} / ${formatTime(duration)}`;
+
+  }
+);
+
+
+/* =====================================================
+   AUDIO LOG
+===================================================== */
+
+function addAudioLog(text){
+
+  const log =
+    document.getElementById(
+      "log"
+    );
+
+  const now =
+    new Date();
+
+  const time =
+    now.toLocaleTimeString(
+      "ja-JP"
+    );
+
+  const line =
+    document.createElement(
+      "div"
+    );
+
+  line.innerHTML =
+    `<span>[${time}]</span> ${text}`;
+
+  log.prepend(line);
+
+}
+
+
+/* =====================================================
+   MAIN AUDIO LOOP
+===================================================== */
+
+function drawAudio(){
+
+  if(animationRunning)
+    return;
+
+  animationRunning = true;
+
+  function loop(){
+
+    if(audio.paused){
+
+      animationRunning =
+        false;
+
+      return;
+
+    }
+
+    drawWaveform();
+
+    drawSpectrum();
+
+    calculateVolume();
+
+    calculateFrequency();
+
+    requestAnimationFrame(
+      loop
+    );
+
+  }
+
+  loop();
+
+}
+
+
+/* =====================================================
+   INITIAL CANVAS
+===================================================== */
+
+function resizeAudioCanvas(){
+
+  if(!audioInitialized)
+    return;
+
+  drawWaveform();
+  drawSpectrum();
+
+}
+
+window.addEventListener(
+  "resize",
+  resizeAudioCanvas
+);
 
 </script>
 
