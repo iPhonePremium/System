@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>NEXUS // SYSTEM</title>
+
+<style>
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  background:#03050a;
+  color:#dffcff;
+  font-family:Consolas,monospace;
+  min-height:100vh;
+  overflow:hidden;
+}
+
+/* 背景 */
+canvas{
+  position:fixed;
+  inset:0;
+  z-index:-2;
+}
+
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+  background-size:40px 40px;
+  z-index:-1;
+}
+
+/* 起動画面 */
+#boot{
+  position:fixed;
+  inset:0;
+  background:#020307;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:100;
+  animation:bootOut 1s ease 3s forwards;
+}
+
+.bootBox{
+  width:min(700px,90%);
+}
+
+.bootTitle{
+  font-size:clamp(25px,5vw,60px);
+  letter-spacing:8px;
+  margin-bottom:25px;
+}
+
+.progress{
+  height:4px;
+  background:#122027;
+  overflow:hidden;
+}
+
+.progress span{
+  display:block;
+  width:0;
+  height:100%;
+  background:#00f6ff;
+  box-shadow:0 0 20px #00f6ff;
+  animation:load 2.5s linear forwards;
+}
+
+.bootText{
+  margin-top:12px;
+  color:#6c8d96;
+  font-size:12px;
+}
+
+@keyframes load{
+  to{width:100%}
+}
+
+@keyframes bootOut{
+  to{
+    opacity:0;
+    visibility:hidden;
+  }
+}
+
+/* メイン */
+.wrapper{
+  width:min(1500px,94%);
+  margin:auto;
+  padding:25px 0;
+  opacity:0;
+  animation:appear 1s ease 3.3s forwards;
+}
+
+@keyframes appear{
+  to{opacity:1}
+}
+
+header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid #17343c;
+  padding-bottom:15px;
+}
+
+.logo{
+  font-size:20px;
+  letter-spacing:5px;
+  color:#00f6ff;
+}
+
+.status{
+  font-size:12px;
+  color:#58ff9b;
+}
+
+.status::before{
+  content:"●";
+  margin-right:7px;
+  animation:blink 1s infinite;
+}
+
+@keyframes blink{
+  50%{opacity:.2}
+}
+
+.hero{
+  margin:35px 0;
+}
+
+.hero small{
+  color:#65838b;
+}
+
+.hero h1{
+  font-size:clamp(40px,8vw,100px);
+  line-height:.9;
+  letter-spacing:-5px;
+  margin:12px 0;
+  text-shadow:0 0 30px rgba(0,246,255,.25);
+}
+
+.hero h1 span{
+  color:#00f6ff;
+}
+
+.hero p{
+  color:#718b91;
+}
+
+/* グリッド */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+}
+
+.card{
+  background:rgba(5,14,20,.72);
+  border:1px solid #16343d;
+  padding:20px;
+  position:relative;
+  overflow:hidden;
+  backdrop-filter:blur(8px);
+  transition:.3s;
+}
+
+.card:hover{
+  transform:translateY(-5px);
+  border-color:#00f6ff;
+  box-shadow:0 0 30px rgba(0,246,255,.1);
+}
+
+.card::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:0;
+  width:35px;
+  height:1px;
+  background:#00f6ff;
+}
+
+.label{
+  color:#62818a;
+  font-size:11px;
+  letter-spacing:2px;
+}
+
+.value{
+  font-size:35px;
+  margin-top:10px;
+}
+
+.unit{
+  font-size:12px;
+  color:#6b9099;
+}
+
+.bar{
+  height:4px;
+  background:#102128;
+  margin-top:15px;
+}
+
+.bar span{
+  display:block;
+  height:100%;
+  background:#00f6ff;
+  box-shadow:0 0 12px #00f6ff;
+  transition:width .7s;
+}
+
+/* 下部 */
+.bottom{
+  display:grid;
+  grid-template-columns:1.5fr 1fr;
+  gap:14px;
+  margin-top:14px;
+}
+
+.log{
+  height:220px;
+  overflow:hidden;
+  font-size:12px;
+  line-height:1.8;
+  color:#78939a;
+}
+
+.log div{
+  border-bottom:1px solid rgba(255,255,255,.03);
+}
+
+.log span{
+  color:#00f6ff;
+}
+
+.core{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:220px;
+  position:relative;
+}
+
+.coreCircle{
+  width:130px;
+  height:130px;
+  border:1px solid #00f6ff;
+  border-radius:50%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  position:relative;
+  box-shadow:
+    0 0 20px rgba(0,246,255,.3),
+    inset 0 0 30px rgba(0,246,255,.1);
+  animation:rotate 8s linear infinite;
+}
+
+.coreCircle::before,
+.coreCircle::after{
+  content:"";
+  position:absolute;
+  border:1px solid #285c65;
+  border-radius:50%;
+}
+
+.coreCircle::before{
+  width:170px;
+  height:170px;
+}
+
+.coreCircle::after{
+  width:210px;
+  height:210px;
+}
+
+.coreText{
+  animation:counter 8s linear infinite;
+  text-align:center;
+  font-size:11px;
+  color:#00f6ff;
+}
+
+@keyframes rotate{
+  to{transform:rotate(360deg)}
+}
+
+@keyframes counter{
+  to{transform:rotate(-360deg)}
+}
+
+/* 時計 */
+.clock{
+  font-size:13px;
+  color:#00f6ff;
+}
+
+/* レスポンシブ */
+@media(max-width:900px){
+  .grid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .bottom{
+    grid-template-columns:1fr;
+  }
+
+  body{
+    overflow:auto;
+  }
+}
+
+@media(max-width:500px){
+  .wrapper{
+    padding:15px 0;
+  }
+
+  .grid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .card{
+    padding:15px;
+  }
+
+  .value{
+    font-size:25px;
+  }
+
+  .hero h1{
+    letter-spacing:-2px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="matrix"></canvas>
+
+<!-- 起動画面 -->
+<div id="boot">
+  <div class="bootBox">
+    <div class="bootTitle">NEXUS</div>
+    <div class="progress"><span></span></div>
+    <div class="bootText" id="bootText">
+      INITIALIZING SYSTEM...
+    </div>
+  </div>
+</div>
+
+<div class="wrapper">
+
+<header>
+  <div class="logo">NEXUS // CORE</div>
+  <div class="status">SYSTEM ONLINE</div>
+  <div class="clock" id="clock">00:00:00</div>
+</header>
+
+<section class="hero">
+  <small>ADVANCED MONITORING SYSTEM / 09.11.2026</small>
+  <h1>CONTROL<br><span>CENTER</span></h1>
+  <p>REAL-TIME SYSTEM OBSERVATION INTERFACE</p>
+</section>
+
+<section class="grid">
+
+  <div class="card">
+    <div class="label">CPU LOAD</div>
+    <div class="value" id="cpu">37<span class="unit">%</span></div>
+    <div class="bar"><span id="cpuBar" style="width:37%"></span></div>
+  </div>
+
+  <div class="card">
+    <div class="label">MEMORY</div>
+    <div class="value" id="memory">64<span class="unit">%</span></div>
+    <div class="bar"><span id="memoryBar" style="width:64%"></span></div>
+  </div>
+
+  <div class="card">
+    <div class="label">NETWORK</div>
+    <div class="value" id="network">82<span class="unit">%</span></div>
+    <div class="bar"><span id="networkBar" style="width:82%"></span></div>
+  </div>
+
+  <div class="card">
+    <div class="label">CORE TEMP</div>
+    <div class="value" id="temp">42<span class="unit">°C</span></div>
+    <div class="bar"><span id="tempBar" style="width:42%"></span></div>
+  </div>
+
+</section>
+
+<section class="bottom">
+
+  <div class="card">
+    <div class="label">LIVE SYSTEM LOG</div>
+    <div class="log" id="log"></div>
+  </div>
+
+  <div class="card">
+    <div class="label">NEURAL CORE</div>
+
+    <div class="core">
+      <div class="coreCircle">
+        <div class="coreText">
+          CORE<br>
+          <strong>ACTIVE</strong>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+</div>
+
+<script>
+
+/* =========================
+   時計
+========================= */
+
+function updateClock(){
+  const now = new Date();
+
+  const h = String(now.getHours()).padStart(2,"0");
+  const m = String(now.getMinutes()).padStart(2,"0");
+  const s = String(now.getSeconds()).padStart(2,"0");
+
+  document.getElementById("clock").textContent =
+    `${h}:${m}:${s}`;
+}
+
+setInterval(updateClock,1000);
+updateClock();
+
+
+/* =========================
+   ランダムメーター
+========================= */
+
+function updateMeter(id,bar,min,max){
+
+  const value =
+    Math.floor(Math.random()*(max-min+1))+min;
+
+  document.getElementById(id).innerHTML =
+    `${value}<span class="unit">%</span>`;
+
+  document.getElementById(bar).style.width =
+    value+"%";
+}
+
+setInterval(()=>{
+
+  updateMeter("cpu","cpuBar",15,85);
+  updateMeter("memory","memoryBar",35,90);
+  updateMeter("network","networkBar",20,99);
+
+  const temp =
+    Math.floor(Math.random()*20)+35;
+
+  document.getElementById("temp").innerHTML =
+    `${temp}<span class="unit">°C</span>`;
+
+  document.getElementById("tempBar").style.width =
+    temp+"%";
+
+},1500);
+
+
+/* =========================
+   システムログ
+========================= */
+
+const messages = [
+  "Connection established",
+  "Neural core synchronized",
+  "Network packet received",
+  "Security scan completed",
+  "Background process optimized",
+  "System integrity verified",
+  "Encrypted channel active",
+  "Monitoring process running",
+  "Telemetry data updated",
+  "Quantum cache synchronized"
+];
+
+function addLog(){
+
+  const log =
+    document.getElementById("log");
+
+  const now = new Date();
+
+  const time =
+    now.toLocaleTimeString("ja-JP");
+
+  const msg =
+    messages[Math.floor(Math.random()*messages.length)];
+
+  const line =
+    document.createElement("div");
+
+  line.innerHTML =
+    `<span>[${time}]</span> ${msg}`;
+
+  log.prepend(line);
+
+  while(log.children.length > 9){
+    log.removeChild(log.lastChild);
+  }
+}
+
+setInterval(addLog,900);
+
+for(let i=0;i<5;i++) addLog();
+
+
+/* =========================
+   MATRIX背景
+========================= */
+
+const canvas =
+  document.getElementById("matrix");
+
+const ctx =
+  canvas.getContext("2d");
+
+let width,height;
+let columns;
+let drops;
+
+function resize(){
+
+  width =
+    canvas.width =
+    window.innerWidth;
+
+  height =
+    canvas.height =
+    window.innerHeight;
+
+  columns =
+    Math.floor(width/18);
+
+  drops =
+    Array(columns).fill(1);
+}
+
+resize();
+
+window.addEventListener("resize",resize);
+
+function drawMatrix(){
+
+  ctx.fillStyle =
+    "rgba(3,5,10,.12)";
+
+  ctx.fillRect(0,0,width,height);
+
+  ctx.font="14px monospace";
+
+  for(let i=0;i<drops.length;i++){
+
+    const chars =
+      "01アイウエオカキクケコ<>/{}[]";
+
+    const char =
+      chars[Math.floor(Math.random()*chars.length)];
+
+    ctx.fillStyle =
+      "rgba(0,246,255,.25)";
+
+    ctx.fillText(
+      char,
+      i*18,
+      drops[i]*18
+    );
+
+    if(
+      drops[i]*18 > height &&
+      Math.random()>.975
+    ){
+      drops[i]=0;
+    }
+
+    drops[i]++;
+  }
+}
+
+setInterval(drawMatrix,50);
+
+
+/* =========================
+   起動メッセージ
+========================= */
+
+const bootMessages = [
+  "LOADING NEURAL CORE...",
+  "ESTABLISHING SECURE CHANNEL...",
+  "CALIBRATING MONITORING SYSTEM...",
+  "SYSTEM INTEGRITY CHECK...",
+  "ACCESS GRANTED."
+];
+
+let index=0;
+
+setInterval(()=>{
+
+  if(index<bootMessages.length){
+
+    document.getElementById("bootText")
+      .textContent=bootMessages[index];
+
+    index++;
+  }
+
+},500);
+
+</script>
+
+</body>
+</html>
